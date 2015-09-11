@@ -33,3 +33,5 @@ sbatch examples/hugemem.sh
 > Copyright 2015:
 > * Tobias Jakobi <TJakobi@age.mpg.de>
 > * Sven E. Templer <templer@age.mpg.de>
+
+See file `LICENSE`.
