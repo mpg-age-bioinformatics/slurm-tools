@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# sgrep - grep slurm queue viewer
+#
+# Copyright (c) 2015 Sven E. Templer <sven.templer@gmail.com>
+
+scontrol show job -d $1 | tr ' ' '\n' | sed '/^$/d' | column -s '=' -t

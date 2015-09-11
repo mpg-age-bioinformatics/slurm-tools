@@ -1,0 +1,70 @@
+#! /bin/bash
+
+# sterm - interactive slurm terminal wrapper
+#
+# Author: Tobias Jakobi
+# tjakobi@age.mpg.de
+# Date: 01/07/2015
+
+# default values
+NAME="-J sterm_${USER}"
+CPUS="-c 2"
+MEM="--mem 4000"
+PARTITION=""
+NODE=""
+MAIL=""
+USAGE="
+sterm - interactive slurm terminal wrapper
+
+Usage: 
+  $0 [-c CPUs] [-m MEM] [-N NODE] [-h|-H] [-i] [-n NAME]
+Options:
+    -c CPUs  : number of CPUs to reserve (default: 1)
+    -m MEM   : number of memory in MB to reserve (default: 4000)
+    -N NODE  : name of the node to run sterm on (default: empty/any)
+    -h|-H    : select none-default partition (himem or hugemem, default: blade)
+    -i       : send information about terminal via email
+    -n NAME  : specify the job name (default: sterm_\$USER)
+"
+
+while [[ $# > 0 ]]
+do
+  key="$1"
+  case $key in
+    -n|--name)
+      NAME="$2"
+      shift
+      ;;
+    -c|--cpu)
+      CPUS="-c $2"
+      shift
+      ;;
+    -m|--mem)
+      MEM="--mem=$2"
+      shift
+      ;;
+    -N|--node)
+      NODE="-w $2"
+      shift
+      ;;
+    -i|--info-mail)
+      MAIL="--mail-type=FAIL --mail-user=$USER@age.mpg.de"
+      ;;
+    -h|--hi)
+      PARTITION="-p himem"
+      ;;
+    -H|--huge)
+      PARTITION="-p hugemem"
+      ;;
+    *)
+      echo "$USAGE"
+      exit 0
+      ;;
+  esac
+  shift
+done
+
+[[ $NODE ]] && PARTITION="-p blade,himem,hugemem"
+echo "[ '${NAME##* }' @ ${PARTITION##* } | ${CPUS##* } CPUs | ${MEM##* } MB ]"
+srun $NODE $PARTITION -N 1 $CPUS $MEM $NAME $MAIL --pty -u /bin/bash --login
+
