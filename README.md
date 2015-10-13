@@ -3,11 +3,13 @@
 ## About
 
 This is a repository with shell scripts, manuals and documentation about slurm.
-On the cluster of the Max Planck Institute for Biology of Ageing, it is
-available with the command:
+
+## Installation
 
 ```
-module load slurm-tools
+git clone https://github.com/mpg-age-bioinformatics/slurm-tools
+cd slurm-tools
+./install /path/to/prefix
 ```
 
 ## Tools
@@ -21,17 +23,17 @@ sgrep  # grep on the slurm queue
 
 ## Examples for sbatch
 
-Find example script for `sbatch` in the `examples/` folder.
-Modify them and run them, e.g.:
-
-```
-sbatch examples/hugemem.sh
-```
+Find example scripts for `sbatch` in the `share` folder.
 
 ## License
 
-> Copyright 2015:
-> * Tobias Jakobi <TJakobi@age.mpg.de>
-> * Sven E. Templer <templer@age.mpg.de>
+> Copyright (c) 2015 Bioinformatics Core Facility of the Max Planck Institute for Biology of Ageing
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> SOFTWARE.
 
-See file `LICENSE`.
