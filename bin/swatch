@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# swatch - slurm queue watcher
+#
+# Copyright (c) 2015 Sven E. Templer <sven.templer@gmail.com>
+
+unset no_jobs
+unset no_nodes
+unset cmd
+unset cmd_grep
+
+interval=5
+
+while [[ $# -gt 0 ]]
+do
+  case $1 in
+    -i)
+      interval=$2
+      shift
+      ;;
+    -j|-q)
+      no_jobs=true
+      ;;
+    -n|-p)
+      no_nodes=true
+      ;;
+    -G)
+      # grep $USER
+      cmd_grep="| grep $USER"
+      ;;
+    -g)
+      # custom grep
+      cmd_grep="| grep $1"
+      shift
+      ;;
+    # -u : user=$1, default $USER
+  esac
+  shift
+done
+
+[[ $no_jobs && $no_nodes ]] && echo "error: only disable one of jobs/nodes" && exit 65
+
+cmd="echo 'swatch (interval ${interval} sec)'; echo;"
+[[ ! $no_nodes ]] && cmd="$cmd echo 'SLURM Nodes:'; echo; sinfo -o '%20n %10P %10T %14C %.7m %10R'; echo;"
+[[ ! $no_jobs ]] && cmd="$cmd echo 'SLURM Queue:'; echo; squeue --sort='i' -o '%.7i %9P %25j %8u %.8T %.12M %.6C %30R' $cmd_grep"
+
+watch --interval $interval --no-title "$cmd"
+
