@@ -3,5 +3,7 @@
 prefix=$1
 [[ -z $prefix ]] && echo "USAGE: ./install /path/prefix" && exit 65
 [[ ! -d $prefix ]] && echo "error: directory '$prefix' not existing" && exit 65
-cp -a README.md LICENSE share bin $prefix/
+mkdir -p $prefix/bin $prefix/share/slurm-tools
+cp -a bin/* $prefix/bin/
+cp -a README.md LICENSE share/* $prefix/share/slurm-tools/
 echo -e "Add PATH: $(readlink -f $prefix/bin)"
