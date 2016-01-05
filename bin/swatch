@@ -42,7 +42,7 @@ done
 
 cmd="echo 'swatch (interval ${interval} sec)'; echo;"
 [[ ! $no_nodes ]] && cmd="$cmd echo 'SLURM Nodes:'; echo; sinfo -o '%20n %10P %10T %14C %.7m %10R'; echo;"
-[[ ! $no_jobs ]] && cmd="$cmd echo 'SLURM Queue:'; echo; squeue --sort='i' -o '%.7i %9P %25j %8u %.8T %.12M %.6C %16R' $cmd_grep"
+[[ ! $no_jobs ]] && cmd="$cmd echo 'SLURM Queue:'; echo; squeue --sort='-T,-M' -o '%.7i %9P %25j %8u %.8T %.12M %.6C %18R' $cmd_grep"
 
 watch --interval $interval --no-title "$cmd"
 
