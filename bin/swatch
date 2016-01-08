@@ -41,7 +41,7 @@ do
       ;;
     -g)
       # custom grep
-      cmd_grep="| grep $1"
+      cmd_grep="| grep $2"
       shift
       ;;
     # -u : user=$1, default $USER
