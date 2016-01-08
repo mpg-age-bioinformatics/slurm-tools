@@ -4,6 +4,17 @@
 #
 # Copyright (c) 2015 Sven E. Templer <sven.templer@gmail.com>
 
+usg="USAGE:
+  swatch [OPTION]
+
+OPTIONS:
+  -i N       : interval in seconds for refreshing (default: 5)
+  -j         : do not show job queue
+  -n         : do not show node list
+  -G         : grep the current linux user in job queue
+  -g PATTERN : grep custom pattern in job queue
+"
+
 unset no_jobs
 unset no_nodes
 unset cmd
@@ -18,10 +29,10 @@ do
       interval=$2
       shift
       ;;
-    -j|-q)
+    -j)
       no_jobs=true
       ;;
-    -n|-p)
+    -n)
       no_nodes=true
       ;;
     -G)
@@ -34,6 +45,10 @@ do
       shift
       ;;
     # -u : user=$1, default $USER
+    -h|--help|help)
+      echo "$usg"
+      exit 65
+      ;;
   esac
   shift
 done
