@@ -32,7 +32,8 @@ done
 
 if [[ $id ]]
 then
-  squeue | grep "$1" | awk '{print $1}'
+  squeue | sed '1d' | grep "$1" | awk '{print $1}'
 else
-  squeue | grep "$1"
+  #squeue | grep "$1"
+  squeue | sed "1p;/$1/!d"
 fi
