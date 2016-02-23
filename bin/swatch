@@ -9,14 +9,14 @@ usg="USAGE:
 
 OPTIONS:
   -i N       : interval in seconds for refreshing (default: 5)
-  -j         : do not show job queue
-  -n         : do not show node list
-  -G         : grep the current linux user in job queue
+  -j         : show only job list
+  -n         : show only node list
+  -u         : grep the current linux user in job queue
   -g PATTERN : grep custom pattern in job queue
 "
 
-unset no_jobs
-unset no_nodes
+show_jobs=true
+show_nodes=true
 unset cmd
 unset cmd_grep
 
@@ -30,21 +30,21 @@ do
       shift
       ;;
     -j)
-      no_jobs=true
+      unset show_nodes
       ;;
     -n)
-      no_nodes=true
+      unset show_jobs
       ;;
-    -G)
+    -u)
       # grep $USER
-      cmd_grep="| grep $USER"
+      cmd_grep="$cmd_grep | (IFS= read -r h; printf '%s\n' \"\$h\"; grep $USER)"
       ;;
     -g)
       # custom grep
-      cmd_grep="| grep $2"
+      cmd_grep="$cmd_grep | (IFS= read -r h; printf '%s\n' \"\$h\"; grep $2)"
+      #cmd_grep="$cmd_grep | grep $2"
       shift
       ;;
-    # -u : user=$1, default $USER
     -h|--help|help)
       echo "$usg"
       exit 65
@@ -53,11 +53,14 @@ do
   shift
 done
 
-[[ $no_jobs && $no_nodes ]] && echo "error: only disable one of jobs/nodes" && exit 65
+[[ -z $show_jobs && -z $show_nodes ]] && echo "error: combination of -j/-n not allowed" && exit 65
 
+cmd_nodes=" echo 'SLURM Nodes:'; echo; sinfo --sort='P,n' -o '%20n %10P %10T %14C %.7m %10R'; echo;"
+cmd_jobs=" echo 'SLURM Queue:'; echo; squeue --sort='-T,-M' -o '%.7i %9P %25j %8u %.8T %.12M %.6C %18R'"
+cmd_jobs+=" $cmd_grep"
 cmd="echo 'swatch (interval ${interval} sec)'; echo;"
-[[ ! $no_nodes ]] && cmd="$cmd echo 'SLURM Nodes:'; echo; sinfo --sort='n' -o '%20n %10P %10T %14C %.7m %10R'; echo;"
-[[ ! $no_jobs ]] && cmd="$cmd echo 'SLURM Queue:'; echo; squeue --sort='-T,-M' -o '%.7i %9P %25j %8u %.8T %.12M %.6C %18R' $cmd_grep"
+[[ $show_nodes ]] && cmd+="$cmd_nodes"
+[[ $show_jobs ]] && cmd+="$cmd_jobs"
 
 watch --interval $interval --no-title "$cmd"
 
